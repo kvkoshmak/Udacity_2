@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants.API_KEY
 import com.udacity.asteroidradar.Constants.BASE_URL
+import com.udacity.asteroidradar.PictureOfDay
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -25,7 +26,7 @@ private val moshi = Moshi.Builder()
  */
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())
-//    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL)
     .build()
 
@@ -36,7 +37,10 @@ interface AsteroidApiService {
      * HTTP method
      */
     @GET("neo/rest/v1/feed?start_date=2020-01-02&end_date=2020-01-03&api_key=${API_KEY}")
-    suspend fun getProperties(): String
+    suspend fun getAsteroidList(): String
+
+    @GET("planetary/apod?api_key=${API_KEY}")
+    suspend fun getImageOfTheDay(): PictureOfDay
 }
 
 /**

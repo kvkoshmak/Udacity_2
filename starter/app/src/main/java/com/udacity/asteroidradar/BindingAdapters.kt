@@ -4,8 +4,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.main.AsteroidListAdapter
 import com.udacity.asteroidradar.main.loadingApiStatus
 
@@ -27,6 +29,14 @@ fun bindStatus(statusBarView: ProgressBar,status : loadingApiStatus){
         loadingApiStatus.DONE -> {
             statusBarView.visibility = View.GONE
         }
+    }
+}
+
+@BindingAdapter("imageOfTheDay")
+fun loadImageWithUri(imageView: ImageView, urlPic: String?){
+    urlPic?.let {
+        val imgUri = urlPic.toUri().buildUpon().scheme("https").build()
+        Picasso.get().load(imgUri).placeholder(R.drawable.placeholder_picture_of_day).into(imageView)
     }
 }
 

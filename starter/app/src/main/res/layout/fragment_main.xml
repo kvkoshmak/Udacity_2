@@ -30,19 +30,27 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/placeholder_picture_of_day"/>
+                app:imageOfTheDay="@{viewModel.dailyPicture.url}"
+                />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
+                android:contentDescription="@{viewModel.dailyPicture.title}"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
                 android:text="@string/image_of_the_day" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.dailyPicture.url}" />
 
         </FrameLayout>
 
