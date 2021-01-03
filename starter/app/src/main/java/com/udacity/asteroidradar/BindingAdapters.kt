@@ -9,7 +9,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.main.AsteroidListAdapter
-import com.udacity.asteroidradar.main.loadingApiStatus
+import com.udacity.asteroidradar.main.LoadingApiStatus
 
 @BindingAdapter("listData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?) {
@@ -18,15 +18,15 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?) {
 }
 
 @BindingAdapter("asteroidApiStatus")
-fun bindStatus(statusBarView: ProgressBar,status : loadingApiStatus){
+fun bindStatus(statusBarView: ProgressBar,status : LoadingApiStatus){
     when (status) {
-        loadingApiStatus.LOADING -> {
+        LoadingApiStatus.LOADING -> {
             statusBarView.visibility = View.VISIBLE
         }
-        loadingApiStatus.ERROR -> {
+        LoadingApiStatus.ERROR -> {
             statusBarView.visibility = View.VISIBLE
         }
-        loadingApiStatus.DONE -> {
+        LoadingApiStatus.DONE -> {
             statusBarView.visibility = View.GONE
         }
     }
