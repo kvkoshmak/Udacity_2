@@ -10,10 +10,10 @@ interface AsteroidDao {
     @Query("SELECT * FROM databaseasteroid ORDER BY closeApproachDate ASC")
     fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
 
-    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate = :date ORDER BY closeApproachDate DESC")
+    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate = :date")
     fun getOneDayAsteroids(date: String): LiveData<List<DatabaseAsteroid>>
 
-    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate BETWEEN :startDate AND :endDate")
+    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate BETWEEN :startDate AND :endDate ORDER BY closeApproachDate ASC")
     fun getRangeAsteroids(startDate: String, endDate: String): LiveData<List<DatabaseAsteroid>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

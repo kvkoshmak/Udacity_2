@@ -17,10 +17,8 @@ class AsteroidRepository (private val database: AsteroidDatabase){
 
     private val nextSevenDaysFormattedDates = getNextSevenDaysFormattedDates()
 
-
-
-    var asteroids: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getOneDayAsteroids(
-            nextSevenDaysFormattedDates.first())){it.asDomainModel() }
+    var asteroids: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroids(
+            )){it.asDomainModel() }
 
     val asteroidsDay: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getOneDayAsteroids(
             nextSevenDaysFormattedDates.first())) { it.asDomainModel() }

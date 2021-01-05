@@ -45,11 +45,12 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
 
     init {
         viewModelScope.launch {
-        refreshDataFromNetwork()
+        refreshImage()
+        refreshAsteroids()
         }
     }
     // set the filter value and choose slice of dataset
-    val asteroids =Transformations.switchMap(apiFilter){
+    val asteroids = Transformations.switchMap(apiFilter){
         when(it){
             ApiFilter.SHOW_TODAY -> asteroidRepository.asteroidsDay
             ApiFilter.SHOW_WEEK -> asteroidRepository.asteroidsRange
@@ -58,18 +59,28 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
     }
 
 
-    private suspend fun refreshDataFromNetwork() {
+    private suspend fun refreshImage() {
         _status.value = LoadingApiStatus.LOADING
         try {
             //refresh image
             _dailyPicture.value = Network.retrofitService.getImageOfTheDay()
+            // status check
+            _status.value = LoadingApiStatus.DONE
+        } catch (e: Exception) {
+            e.printStackTrace()
+//            _status.value = LoadingApiStatus.ERROR
+        }
+    }
+    private suspend fun refreshAsteroids() {
+        _status.value = LoadingApiStatus.LOADING
+        try {
             //refresh asteroids
             asteroidRepository.refreshAsteroids()
             // status check
             _status.value = LoadingApiStatus.DONE
         } catch (e: Exception) {
             e.printStackTrace()
-            _status.value = LoadingApiStatus.ERROR
+//            _status.value = LoadingApiStatus.ERROR
         }
     }
     // start nav

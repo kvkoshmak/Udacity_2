@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.main.AsteroidListAdapter
 import com.udacity.asteroidradar.main.LoadingApiStatus
@@ -36,7 +38,10 @@ fun bindStatus(statusBarView: ProgressBar,status : LoadingApiStatus){
 fun loadImageWithUri(imageView: ImageView, urlPic: String?){
     urlPic?.let {
         val imgUri = urlPic.toUri().buildUpon().scheme("https").build()
-        Picasso.get().load(imgUri).placeholder(R.drawable.placeholder_picture_of_day).into(imageView)
+        Picasso.get()
+                .load(imgUri)
+                .placeholder(R.drawable.placeholder_picture_of_day)
+                .into(imageView)
     }
 }
 
