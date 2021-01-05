@@ -15,10 +15,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-/**
- * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
- * full Kotlin compatibility.
- */
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
@@ -26,12 +22,12 @@ private val moshi = Moshi.Builder()
 
 interface AsteroidApiService {
 
-    @GET("neo/rest/v1/feed?start_date=2020-01-03&end_date=2020-01-03&api_key=${API_KEY}")
+    @GET("neo/rest/v1/feed?&api_key=${API_KEY}")
     suspend fun getAsteroidList(): String
 
 
     @GET("planetary/apod?api_key=${API_KEY}")
-    fun getImageOfTheDay(): Deferred<PictureOfDay>
+    suspend fun getImageOfTheDay(): PictureOfDay
 }
 
 /**

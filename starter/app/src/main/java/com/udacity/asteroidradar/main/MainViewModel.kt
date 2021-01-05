@@ -8,11 +8,11 @@ import com.udacity.asteroidradar.api.*
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.lang.Exception
 
 
 enum class LoadingApiStatus { LOADING, ERROR, DONE }
+enum class ApiFilter { SHOW_TODAY, SHOW_WEEK, SHOW_ALL}
 
 class MainViewModel (application: Application) : AndroidViewModel(application) {
 
@@ -35,6 +35,9 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
     val navigateToSelectedProperty: LiveData<Asteroid>
         get() = _navigateToSelectedProperty
 
+    // set filter for asteroid request
+    private val apiFilter = MutableLiveData<ApiFilter>(ApiFilter.SHOW_ALL)
+
     //set database
     private val database = getDatabase(application)
     private val asteroidRepository = AsteroidRepository(database)
@@ -45,36 +48,41 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
         refreshDataFromNetwork()
         }
     }
-    val asteroids = asteroidRepository.asteroids
+    // set the filter value and choose slice of dataset
+    val asteroids =Transformations.switchMap(apiFilter){
+        when(it){
+            ApiFilter.SHOW_TODAY -> asteroidRepository.asteroidsDay
+            ApiFilter.SHOW_WEEK -> asteroidRepository.asteroidsRange
+            else -> asteroidRepository.asteroids
+        }
+    }
+
 
     private suspend fun refreshDataFromNetwork() {
         _status.value = LoadingApiStatus.LOADING
         try {
-            //refresh asteroids
-            val jsonResult = Network.retrofitService.getAsteroidList()
-            // upload asteroid list using parser
-            val jsonObject = JSONObject(jsonResult)
-            val res = parseAsteroidsJsonResult(jsonObject)
-            val netAsteroids = NetworkAsteroidContainer(res)
-            database.asteroidDao.insertAll(*netAsteroids.asDatabaseModel())
             //refresh image
-            _dailyPicture.value = Network.retrofitService.getImageOfTheDay().await()
+            _dailyPicture.value = Network.retrofitService.getImageOfTheDay()
+            //refresh asteroids
+            asteroidRepository.refreshAsteroids()
             // status check
             _status.value = LoadingApiStatus.DONE
         } catch (e: Exception) {
+            e.printStackTrace()
             _status.value = LoadingApiStatus.ERROR
         }
     }
-
+    // start nav
     fun displayPropertyDetails(marsProperty: Asteroid) {
         _navigateToSelectedProperty.value = marsProperty
     }
-
-    /**
-     * After the navigation has taken place, navigateToSelectedProperty is set to null
-     */
+    // finish nav
     fun displayPropertyDetailsComplete() {
         _navigateToSelectedProperty.value = null
+    }
+    // update filter
+    fun updateFilter(filter :ApiFilter){
+        apiFilter.value = filter
     }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {

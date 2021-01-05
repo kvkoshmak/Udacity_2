@@ -30,6 +30,7 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
+                android:contentDescription="@{viewModel.dailyPicture.title}"
                 app:imageOfTheDay="@{viewModel.dailyPicture.url}"
                 />
 
@@ -38,7 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:contentDescription="@{viewModel.dailyPicture.title}"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:textSize="20sp"
