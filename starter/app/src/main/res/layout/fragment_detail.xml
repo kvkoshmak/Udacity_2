@@ -20,7 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            app:asteroidImageDescription="@{viewModel.selectedAsteroid.potentiallyHazardous}"
             app:asteroidStatusImage="@{viewModel.selectedAsteroid.potentiallyHazardous}"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -94,6 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
+                        android:contentDescription="@string/astronomical_unit_explanation_button"
                         app:srcCompat="@drawable/ic_help_circle" />
 
                 </LinearLayout>
@@ -103,6 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/estimated_diameter_title"
+                    android:contentDescription="@string/estimated_diameter_title"
                     android:textColor="@color/default_text_color" />
 
                 <TextView

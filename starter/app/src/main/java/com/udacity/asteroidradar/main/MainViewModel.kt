@@ -1,20 +1,23 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
+import android.app.PendingIntent.getActivity
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.PictureOfDay
-import com.udacity.asteroidradar.api.*
+import com.udacity.asteroidradar.R
+import com.udacity.asteroidradar.api.Network
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 
 enum class LoadingApiStatus { LOADING, ERROR, DONE }
 enum class ApiFilter { SHOW_TODAY, SHOW_WEEK, SHOW_ALL}
 
-class MainViewModel (application: Application) : AndroidViewModel(application) {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     // The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadingApiStatus>()
@@ -57,6 +60,7 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
             else -> asteroidRepository.asteroids
         }
     }
+//    val activity = requireNotNull(this.activity)
 
 
     private suspend fun refreshImage() {
@@ -68,7 +72,8 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
             _status.value = LoadingApiStatus.DONE
         } catch (e: Exception) {
             e.printStackTrace()
-//            _status.value = LoadingApiStatus.ERROR
+            _dailyPicture.value = PictureOfDay("", "cached image", getUrlString())
+            _status.value = LoadingApiStatus.DONE
         }
     }
     private suspend fun refreshAsteroids() {
@@ -80,7 +85,7 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
             _status.value = LoadingApiStatus.DONE
         } catch (e: Exception) {
             e.printStackTrace()
-//            _status.value = LoadingApiStatus.ERROR
+            _status.value = LoadingApiStatus.DONE
         }
     }
     // start nav
@@ -92,8 +97,14 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
         _navigateToSelectedProperty.value = null
     }
     // update filter
-    fun updateFilter(filter :ApiFilter){
+    fun updateFilter(filter: ApiFilter){
         apiFilter.value = filter
+    }
+
+    // url from saved cache
+    private fun getUrlString(): String {
+        val sharedPref: SharedPreferences = getApplication<Application>().getSharedPreferences("my_pref",Context.MODE_PRIVATE)
+        return sharedPref.getString("new_url",null)!!
     }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {

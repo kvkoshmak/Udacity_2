@@ -13,15 +13,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="5dp"
-        tools:layout_editor_absoluteX="1dp">
+        tools:context = "com.udacity.asteroidradar.main.MainFragment"
+        tools:layout_editor_absoluteX="1dp"
+        android:background="@color/app_background">
 
         <TextView
             android:id="@+id/asteroidID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
+            android:contentDescription="asteroid name @{asteroid.codename}"
             android:text="@{asteroid.codename}"
-            android:textColor="@color/cardview_dark_background"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -32,8 +35,9 @@
             android:id="@+id/asteroidDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="approach date @{asteroid.closeApproachDate}"
             android:text="@{asteroid.closeApproachDate}"
-            android:textColor="@color/cardview_dark_background"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="@+id/asteroidID"
             app:layout_constraintTop_toBottomOf="@+id/asteroidID"
@@ -44,14 +48,15 @@
             android:id="@+id/imageView"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="100dp"
+            android:layout_marginStart="200dp"
+            app:asteroidImageDescription="@{asteroid.potentiallyHazardous}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.971"
-            app:layout_constraintStart_toEndOf="@+id/asteroidID"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/asteroidDate"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
-            app:statusIcon = "@{asteroid.potentiallyHazardous}"
+            app:statusIcon="@{asteroid.potentiallyHazardous}"
             tools:src="@drawable/ic_status_potentially_hazardous" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

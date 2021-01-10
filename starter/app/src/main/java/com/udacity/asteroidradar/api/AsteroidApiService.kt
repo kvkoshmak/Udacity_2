@@ -13,6 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 val days = getNextSevenDaysFormattedDates()
 
@@ -27,8 +28,11 @@ interface AsteroidApiService {
     @GET("neo/rest/v1/feed?&api_key=${API_KEY}")
     suspend fun getAsteroidList(): String
 
-//    @GET("neo/rest/v1/feed?start_date=${TODAY}&end_date=${TODAY}&api_key=${API_KEY}")
+//    @GET("neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=${API_KEY}")
 //    suspend fun getAsteroidListToday(): String
+    @GET("neo/rest/v1/feed?start_date={today}&end_date={today}&api_key=${API_KEY}")
+    suspend fun getAsteroidListToday(@Path("today") date: String = TODAY): String
+
 
     @GET("planetary/apod?api_key=${API_KEY}")
     suspend fun getImageOfTheDay(): PictureOfDay

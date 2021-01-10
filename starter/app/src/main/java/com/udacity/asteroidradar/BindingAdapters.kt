@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
@@ -40,8 +41,18 @@ fun loadImageWithUri(imageView: ImageView, urlPic: String?){
         val imgUri = urlPic.toUri().buildUpon().scheme("https").build()
         Picasso.get()
                 .load(imgUri)
-                .placeholder(R.drawable.placeholder_picture_of_day)
-                .into(imageView)
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(imageView, object : Callback {
+                    override fun onSuccess() {
+                        //Offline Cache hit
+                    }
+                    override fun onError(e: Exception?) {
+                        //Try again online if cache failed
+                        Picasso.get()
+                                .load(imgUri)
+                                .into(imageView)
+                    }
+                })
     }
 }
 
@@ -63,20 +74,32 @@ fun bindDetailsStatusImage(imageView: ImageView, isHazardous: Boolean) {
     }
 }
 
+@BindingAdapter("asteroidImageDescription")
+fun bindAsteroidImageDescription(imageView: ImageView, isHazardous: Boolean) {
+    if (isHazardous) {
+        imageView.contentDescription = "Image of potentially hazardous asteroid"
+    } else {
+        imageView.contentDescription = "Image of happy, not hazardous asteroid"
+    }
+}
+
 @BindingAdapter("astronomicalUnitText")
 fun bindTextViewToAstronomicalUnit(textView: TextView, number: Double) {
     val context = textView.context
     textView.text = String.format(context.getString(R.string.astronomical_unit_format), number)
+    textView.contentDescription = String.format(context.getString(R.string.astronomical_unit_format), number)
 }
 
 @BindingAdapter("kmUnitText")
 fun bindTextViewToKmUnit(textView: TextView, number: Double) {
     val context = textView.context
     textView.text = String.format(context.getString(R.string.km_unit_format), number)
+    textView.contentDescription = String.format(context.getString(R.string.km_unit_format), number)
 }
 
 @BindingAdapter("velocityText")
 fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
     val context = textView.context
     textView.text = String.format(context.getString(R.string.km_s_unit_format), number)
+    textView.contentDescription = String.format(context.getString(R.string.km_s_unit_format), number)
 }

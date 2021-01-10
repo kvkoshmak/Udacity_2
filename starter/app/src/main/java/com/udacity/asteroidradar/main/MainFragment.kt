@@ -1,7 +1,9 @@
 package com.udacity.asteroidradar.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +39,21 @@ class MainFragment : Fragment() {
                 viewModel.displayPropertyDetailsComplete()
             }
         })
+
+
+        viewModel.dailyPicture.observe(this, Observer {
+            it?.let{
+                val sharedPref = activity?.getSharedPreferences("my_pref",Context.MODE_PRIVATE)
+                with (sharedPref!!.edit()) {
+                    putString("new_url", viewModel.dailyPicture.value?.url)
+                    //printout the name
+//                    Toast.makeText(activity, viewModel.dailyPicture.value?.url, Toast.LENGTH_SHORT).show()
+                    apply()
+                }
+            }
+        })
+
+
 
         setHasOptionsMenu(true)
 

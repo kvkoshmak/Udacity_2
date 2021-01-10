@@ -1,16 +1,17 @@
 package com.udacity.asteroidradar.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.*
 import com.udacity.asteroidradar.database.AsteroidDatabase
 import com.udacity.asteroidradar.database.asDomainModel
-import com.udacity.asteroidradar.main.LoadingApiStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AsteroidRepository (private val database: AsteroidDatabase){
@@ -34,5 +35,26 @@ class AsteroidRepository (private val database: AsteroidDatabase){
             val netAsteroids = NetworkAsteroidContainer(parseAsteroidsJsonResult(JSONObject(jsonResult)))
             database.asteroidDao.insertAll(*netAsteroids.asDatabaseModel())
         }
+    }
+    suspend fun deleteYesterdayAsteroids() {
+        withContext(Dispatchers.IO) {
+            database.asteroidDao.deleteYesterday(getYesterday())
+        }
+    }
+
+    suspend fun refreshTodayAsteroids() {
+        withContext(Dispatchers.IO) {
+            val jsonResult = Network.retrofitService.getAsteroidListToday()
+            // upload asteroid list using parser
+            val netAsteroids = NetworkAsteroidContainer(parseAsteroidsJsonResult(JSONObject(jsonResult)))
+            database.asteroidDao.insertAll(*netAsteroids.asDatabaseModel())
+        }
+    }
+
+    fun getYesterday() : String {
+        val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, -1)
+        return dateFormat.format(calendar.time)
     }
 }
